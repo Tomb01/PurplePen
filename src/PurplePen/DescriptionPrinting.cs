@@ -36,6 +36,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Printing;
+using System.Text;
 
 namespace PurplePen
 {
@@ -131,5 +132,40 @@ namespace PurplePen
         public float BoxSize = 6F;                 // box size
         public bool UseCourseDefault = true;  // if true, use the course default description kind
         public DescriptionKind DescKind = DescriptionKind.Symbols;      // description kind to uses (if useCourseDefault is false)
+    }
+
+    class DescriptionCSV
+    {
+        private EventDB eventDB;
+        private SymbolDB symbolDB;
+        public DescriptionCSV(EventDB eventDB, SymbolDB symbolDB, Controller controller)
+        {
+            this.eventDB = eventDB;
+            this.symbolDB = symbolDB;
+        }
+
+        public StringBuilder getCSV()
+        {
+
+            ICollection<CourseControl> allcourseControls = eventDB.AllCourseControls;
+
+            var csv = new StringBuilder();
+            string language = QueryEvent.GetDescriptionLanguage(eventDB);
+
+            Textifier textifier = new Textifier(eventDB, symbolDB, language);
+
+            foreach (CourseControl courseControl in allcourseControls)
+            {
+                ControlPoint control = eventDB.GetControl(courseControl.control);
+                if (control.code == null) continue;
+                string textdescription = control.descriptionText;
+                if (textdescription == null) textdescription = textifier.CreateTextForControl(courseControl.control, "");
+                var newline = string.Format("{0};{1};{2}", control.code.ToString(), textdescription, courseControl.points);
+                csv.AppendLine(newline);
+            }
+
+            return csv;
+        }
+              
     }
 }

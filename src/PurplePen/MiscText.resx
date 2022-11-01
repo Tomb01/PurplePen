@@ -625,4 +625,10 @@ After pressing OK, try to find a copy of the map file on your computer.</value>
   <data name="AddEllipseTitle" xml:space="preserve">
     <value>Add Ellipse</value>
   </data>
+  <data name="CannotCreateCSV" xml:space="preserve">
+    <value>Error during CSV export</value>
+  </data>
+  <data name="CSVFilter" xml:space="preserve">
+    <value>CSV |*.csv</value>
+  </data>
 </root>

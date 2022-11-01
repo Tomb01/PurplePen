@@ -1236,6 +1236,18 @@ namespace PurplePen
             return success;
         }
 
+        public bool CreateDescriptionCSV(string pathName)
+        {
+            bool success = HandleExceptions(
+                delegate {
+                    DescriptionCSV descriptionCSV = new DescriptionCSV(eventDB, symbolDB, this);
+                    File.WriteAllText(pathName, descriptionCSV.getCSV().ToString());
+                },
+                MiscText.CannotCreateCSV);
+
+            return success;
+        }
+
         // Print or print preview punch cards. Returns success or failure; any errors are already reported to the user.
         public bool PrintPunches(PunchPrintSettings punchPrintSettings, bool preview)
         {
@@ -1664,7 +1676,7 @@ namespace PurplePen
 
         // Duplicate the current course, with new properties. Duplicates all the course controls.
         // The course kind cannot be changed.
-        public void DuplicateCurrentCourse(string name, ControlLabelKind labelKind, int scoreColumn, string secondaryTitle, float printScale, float climb, float? length, DescriptionKind descriptionKind, int firstControlOrdinal)
+        public void DuplicateCurrentCourse(string name, ControlLabelKind labelKind, int scoreColumn, string secondaryTitle, float printScale, float climb, float? length, DescriptionKind descriptionKind, int firstControlOrdinal, float appearanceScaleFactor)
         {
             Id<Course> currentCourseId = selectionMgr.Selection.ActiveCourseDesignator.CourseId;
             Course currentCourse = eventDB.GetCourse(currentCourseId);
@@ -1675,7 +1687,7 @@ namespace PurplePen
             Id<Course> newCourseId = ChangeEvent.DuplicateCourse(eventDB, currentCourseId, name);
 
             // Change properties as desired.
-            ChangeEvent.ChangeCourseProperties(eventDB, newCourseId, currentCourse.kind, name, labelKind, scoreColumn, secondaryTitle, printScale, climb, length, descriptionKind, firstControlOrdinal);
+            ChangeEvent.ChangeCourseProperties(eventDB, newCourseId, currentCourse.kind, name, labelKind, scoreColumn, secondaryTitle, printScale, climb, length, descriptionKind, firstControlOrdinal, appearanceScaleFactor);
             
             // Show the new (duplicated) course (with same part as before).
             CourseDesignator newCourseDesignator;
@@ -1689,10 +1701,10 @@ namespace PurplePen
         }
 
         // Add a new course. If a unique start or finish control is found, it is added.
-        public void NewCourse(CourseKind courseKind, string name, ControlLabelKind labelKind, int scoreColumn, string secondaryTitle, float printScale, float climb, float? length, DescriptionKind descriptionKind, int firstControlOrdinal)
+        public void NewCourse(CourseKind courseKind, string name, ControlLabelKind labelKind, int scoreColumn, string secondaryTitle, float printScale, float climb, float? length, DescriptionKind descriptionKind, int firstControlOrdinal, float appearanceScaleFactor)
         {
             undoMgr.BeginCommand(713, CommandNameText.NewCourse);
-            Id<Course> newCourse = ChangeEvent.CreateCourse(eventDB, courseKind, name, labelKind, scoreColumn, secondaryTitle, printScale, climb, length, descriptionKind, firstControlOrdinal, true);
+            Id<Course> newCourse = ChangeEvent.CreateCourse(eventDB, courseKind, name, labelKind, scoreColumn, secondaryTitle, printScale, climb, length, descriptionKind, firstControlOrdinal, true, appearanceScaleFactor);
             selectionMgr.SelectCourseView(new CourseDesignator(newCourse));
             undoMgr.EndCommand(713);
         }
@@ -1704,7 +1716,7 @@ namespace PurplePen
         }
 
         // Get the properties of the current course?
-        public void GetCurrentCourseProperties(out CourseKind courseKind, out string courseName, out ControlLabelKind labelKind, out int scoreColumn, out string secondaryTitle, out float printScale, out float climb, out float? length, out DescriptionKind descKind, out int firstControlOrdinal)
+        public void GetCurrentCourseProperties(out CourseKind courseKind, out string courseName, out ControlLabelKind labelKind, out int scoreColumn, out string secondaryTitle, out float printScale, out float climb, out float? length, out DescriptionKind descKind, out int firstControlOrdinal, out float appearanceSizeFactor)
         {
             Course course = eventDB.GetCourse(selectionMgr.Selection.ActiveCourseDesignator.CourseId);
             courseKind = course.kind;
@@ -1717,13 +1729,14 @@ namespace PurplePen
             descKind = course.descKind;
             firstControlOrdinal = course.firstControlOrdinal;
             scoreColumn = course.scoreColumn;
+            appearanceSizeFactor = course.appearanceScaleFactor;
         }
 
         // Change the properties of the current course.
-        public void ChangeCurrentCourseProperties(CourseKind courseKind, string courseName, ControlLabelKind labelKind, int scoreColumn, string secondaryTitle, float printScale, float climb, float? length, DescriptionKind descriptionKind, int firstControlOrdinal)
+        public void ChangeCurrentCourseProperties(CourseKind courseKind, string courseName, ControlLabelKind labelKind, int scoreColumn, string secondaryTitle, float printScale, float climb, float? length, DescriptionKind descriptionKind, int firstControlOrdinal, float appearanceScaleFactor)
         {
             undoMgr.BeginCommand(888, CommandNameText.ChangeCourseProperties);
-            ChangeEvent.ChangeCourseProperties(eventDB, selectionMgr.Selection.ActiveCourseDesignator.CourseId, courseKind, courseName, labelKind, scoreColumn, secondaryTitle, printScale, climb, length, descriptionKind, firstControlOrdinal);
+            ChangeEvent.ChangeCourseProperties(eventDB, selectionMgr.Selection.ActiveCourseDesignator.CourseId, courseKind, courseName, labelKind, scoreColumn, secondaryTitle, printScale, climb, length, descriptionKind, firstControlOrdinal, appearanceScaleFactor);
             undoMgr.EndCommand(888);
         }
 
@@ -3230,6 +3243,13 @@ namespace PurplePen
             }
 
             undoMgr.EndCommand(9913);
+        }
+
+        public void LetterAssignament(string firstLetter, Id<Course> courseId)
+        {
+            undoMgr.BeginCommand(9999, CommandNameText.AutoNumbering);
+            ChangeEvent.LetterAssignament(eventDB, courseId, firstLetter);
+            undoMgr.EndCommand(9999);
         }
 
         // Get the description language

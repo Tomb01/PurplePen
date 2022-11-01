@@ -229,6 +229,10 @@ namespace PurplePen
             this.legLengthsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.controlCrossrefMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.controlAndLegLoadMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.utilsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.adventureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.letterAssignamentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.helpContentsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.helpTranslatedMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -253,6 +257,8 @@ namespace PurplePen
             this.addDescriptionLanguageMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.addTranslatedTextsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.mergeSymbolsMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.customToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cSVExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolbar = new System.Windows.Forms.ToolStrip();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -531,7 +537,9 @@ namespace PurplePen
             this.courseMenu,
             this.itemMenu,
             this.reportMenu,
-            this.helpMenu});
+            this.utilsToolStripMenuItem,
+            this.helpMenu,
+            this.customToolStripMenuItem});
             resources.ApplyResources(this.mainMenu, "mainMenu");
             this.mainMenu.Name = "mainMenu";
             // 
@@ -1543,6 +1551,33 @@ namespace PurplePen
             resources.ApplyResources(this.controlAndLegLoadMenu, "controlAndLegLoadMenu");
             this.controlAndLegLoadMenu.Click += new System.EventHandler(this.controlAndLegLoadMenu_Click);
             // 
+            // utilsToolStripMenuItem
+            // 
+            this.utilsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.adventureToolStripMenuItem});
+            this.utilsToolStripMenuItem.Name = "utilsToolStripMenuItem";
+            resources.ApplyResources(this.utilsToolStripMenuItem, "utilsToolStripMenuItem");
+            // 
+            // adventureToolStripMenuItem
+            // 
+            this.adventureToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.letterAssignamentToolStripMenuItem,
+            this.exportCSVToolStripMenuItem});
+            this.adventureToolStripMenuItem.Name = "adventureToolStripMenuItem";
+            resources.ApplyResources(this.adventureToolStripMenuItem, "adventureToolStripMenuItem");
+            // 
+            // letterAssignamentToolStripMenuItem
+            // 
+            this.letterAssignamentToolStripMenuItem.Name = "letterAssignamentToolStripMenuItem";
+            resources.ApplyResources(this.letterAssignamentToolStripMenuItem, "letterAssignamentToolStripMenuItem");
+            this.letterAssignamentToolStripMenuItem.Click += new System.EventHandler(this.letterAssignamentToolStripMenuItem_Click);
+            // 
+            // exportCSVToolStripMenuItem
+            // 
+            this.exportCSVToolStripMenuItem.Name = "exportCSVToolStripMenuItem";
+            resources.ApplyResources(this.exportCSVToolStripMenuItem, "exportCSVToolStripMenuItem");
+            this.exportCSVToolStripMenuItem.Click += new System.EventHandler(this.exportCSVToolStripMenuItem_Click);
+            // 
             // helpMenu
             // 
             this.helpMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1709,6 +1744,16 @@ namespace PurplePen
             resources.ApplyResources(this.mergeSymbolsMenu, "mergeSymbolsMenu");
             this.mergeSymbolsMenu.Click += new System.EventHandler(this.mergeSymbolsMenu_Click);
             // 
+            // customToolStripMenuItem
+            // 
+            this.customToolStripMenuItem.Name = "customToolStripMenuItem";
+            resources.ApplyResources(this.customToolStripMenuItem, "customToolStripMenuItem");
+            // 
+            // cSVExportToolStripMenuItem
+            // 
+            this.cSVExportToolStripMenuItem.Name = "cSVExportToolStripMenuItem";
+            resources.ApplyResources(this.cSVExportToolStripMenuItem, "cSVExportToolStripMenuItem");
+            // 
             // toolbar
             // 
             this.toolbar.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
@@ -1780,8 +1825,8 @@ namespace PurplePen
             // deleteToolStripButton
             // 
             this.deleteToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            resources.ApplyResources(this.deleteToolStripButton, "deleteToolStripButton");
             this.deleteToolStripButton.Name = "deleteToolStripButton";
+            resources.ApplyResources(this.deleteToolStripButton, "deleteToolStripButton");
             this.deleteToolStripButton.Click += new System.EventHandler(this.deleteMenu_Click);
             // 
             // toolStripSeparator17
@@ -2331,5 +2376,11 @@ namespace PurplePen
         private System.Windows.Forms.ToolStripMenuItem createRouteReviewFilesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createRouteGadgetFilesMenu;
         private System.Windows.Forms.ToolStripMenuItem publishToLiveloxMenu;
+        private System.Windows.Forms.ToolStripMenuItem customToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cSVExportToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem utilsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem adventureToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem letterAssignamentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportCSVToolStripMenuItem;
     }
 }

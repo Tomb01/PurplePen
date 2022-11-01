@@ -246,7 +246,23 @@ namespace PurplePen
                         text += points.ToString();
                     }
                     else {
-                        text += "(" + points.ToString() + ")";
+                        // VAR Edit -> display * for 5 points, ** for 10 and *** for 25
+                        switch (points)
+                        {
+                            case 5:
+                                text += "*";
+                                break;
+                            case 10:
+                                text += "**";
+                                break;
+                            case 25:
+                                text += "***";
+                                break;
+                            default:
+                                text += '-' + points.ToString();
+                                break;
+                        }
+                        //text += "(" + points.ToString() + ")";
                     }
                 }
             }

@@ -63,6 +63,8 @@ namespace PurplePen
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddCourse));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.appearanceScaleFactorUpDown = new System.Windows.Forms.NumericUpDown();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.firstControlLabel = new System.Windows.Forms.Label();
             this.descriptionAppearanceLabel = new System.Windows.Forms.Label();
@@ -94,6 +96,7 @@ namespace PurplePen
             this.lengthTextBox = new System.Windows.Forms.TextBox();
             this.kmSuffix = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.appearanceScaleFactorUpDown)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.firstControlUpDown)).BeginInit();
@@ -114,10 +117,43 @@ namespace PurplePen
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.appearanceScaleFactorUpDown);
             this.groupBox1.Controls.Add(this.tableLayoutPanel2);
             resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
+            // 
+            // label1
+            // 
+            resources.ApplyResources(this.label1, "label1");
+            this.label1.Name = "label1";
+            // 
+            // appearanceScaleFactorUpDown
+            // 
+            this.appearanceScaleFactorUpDown.DecimalPlaces = 2;
+            this.appearanceScaleFactorUpDown.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            resources.ApplyResources(this.appearanceScaleFactorUpDown, "appearanceScaleFactorUpDown");
+            this.appearanceScaleFactorUpDown.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.appearanceScaleFactorUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.appearanceScaleFactorUpDown.Name = "appearanceScaleFactorUpDown";
+            this.appearanceScaleFactorUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // tableLayoutPanel2
             // 
@@ -354,13 +390,14 @@ namespace PurplePen
             this.Controls.Add(this.secondaryTitleGroup);
             this.Controls.Add(this.groupBox1);
             this.Name = "AddCourse";
-            this.Controls.SetChildIndex(this.okButton, 0);
-            this.Controls.SetChildIndex(this.cancelButton, 0);
             this.Controls.SetChildIndex(this.groupBox1, 0);
             this.Controls.SetChildIndex(this.secondaryTitleGroup, 0);
             this.Controls.SetChildIndex(this.tableLayoutPanel1, 0);
+            this.Controls.SetChildIndex(this.okButton, 0);
+            this.Controls.SetChildIndex(this.cancelButton, 0);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.appearanceScaleFactorUpDown)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
@@ -413,5 +450,7 @@ namespace PurplePen
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
         private System.Windows.Forms.TextBox lengthTextBox;
         private System.Windows.Forms.Label kmSuffix;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown appearanceScaleFactorUpDown;
     }
 }

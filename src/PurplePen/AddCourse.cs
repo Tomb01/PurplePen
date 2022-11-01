@@ -255,6 +255,18 @@ namespace PurplePen
             }
         }
 
+        public float appearanceScaleFactor
+        {
+            get
+            {
+                return (float)appearanceScaleFactorUpDown.Value;
+            }
+            set
+            {
+                appearanceScaleFactorUpDown.Value = (decimal)value;
+            }
+        }
+
         public int ScoreColumn 
         {
             get {
@@ -338,7 +350,15 @@ namespace PurplePen
                 length = enteredLength * 1000;  // Convert from km to meters.
             }
 
+            //Validate appearance scale factor
+            if (appearanceScaleFactorUpDown.Value <= 0)
+            {
+                appearanceScaleFactorUpDown.Value = 1;
+            }
+
             return true;
+
+
         }
 
         private void courseKindCombo_SelectionChangeCommitted(object sender, EventArgs e) {

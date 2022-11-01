@@ -683,7 +683,13 @@ namespace PurplePen
                 RenderSingleLineText(renderer, COLUMNF_DOUBLE_FONT, StringAlignment.Center, second, rectSecond.Left, rectSecond.Top, rectSecond.Right, rectSecond.Bottom, clipRect);
             }
             else {
-                RenderSingleLineText(renderer, COLUMNF_FONT, StringAlignment.Center, s, left, top, right, bottom, clipRect);
+                if(int.TryParse(s, out _))
+                {
+                    RenderSingleLineText(renderer, COLUMNF_FONT, StringAlignment.Center, s, left, top, right, bottom, clipRect);
+                } else {
+                    RenderSingleLineText(renderer, COLUMNF_FONT, StringAlignment.Center, "", left, top, right, bottom, clipRect);
+                }
+                
             }
         }
 

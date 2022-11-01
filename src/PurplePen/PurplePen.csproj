@@ -52,12 +52,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Release\</OutputPath>
     <DefineConstants>TRACE;TEST</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -191,6 +191,7 @@
       <DependentUpon>ChangeText.cs</DependentUpon>
     </Compile>
     <Compile Include="CircleGap.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="ColorChooserDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -288,6 +289,12 @@
     </Compile>
     <Compile Include="CreateOcadFiles.Designer.cs">
       <DependentUpon>CreateOcadFiles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LetterAssignament.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LetterAssignament.Designer.cs">
+      <DependentUpon>LetterAssignament.cs</DependentUpon>
     </Compile>
     <Compile Include="Livelox\ApiContracts\ApiError.cs" />
     <Compile Include="Livelox\ApiContracts\Country.cs" />
@@ -1947,6 +1954,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CreatePdfCourses.zh-CN.resx">
       <DependentUpon>CreatePdfCourses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LetterAssignament.resx">
+      <DependentUpon>LetterAssignament.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Livelox\ConsentRedirectionDialog.resx">
       <DependentUpon>ConsentRedirectionDialog.cs</DependentUpon>

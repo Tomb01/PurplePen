@@ -652,7 +652,7 @@ namespace PurplePen
     {
         Symbols,                        // Symbolic only (standard)
         Text,                           // Text only
-        SymbolsAndText                  // Symbols and text
+        SymbolsAndText,                 // Symbols and text
     }
 
     public class PartOptions: ICloneable
@@ -881,6 +881,7 @@ namespace PurplePen
         public Dictionary<int, PartOptions> partOptions;  // options of parts.
         public RelaySettings relaySettings;
         public Id<CourseControl> firstCourseControl;  // Id of first course control (None if no controls).
+        public float appearanceScaleFactor;
 
         public Course()
         {
@@ -903,6 +904,7 @@ namespace PurplePen
             this.firstControlOrdinal = 1;
             this.scoreColumn = -1;
             this.printArea = PrintArea.DefaultPrintArea;
+            this.appearanceScaleFactor = 1;
         }
 
         public void Validate(Id<Course> id, EventDB.ValidateInfo validateInfo)
@@ -922,6 +924,8 @@ namespace PurplePen
                 throw new ApplicationException(string.Format("Course '{0}' has invalid score column", id, scoreColumn));
             if (printArea == null)
                 throw new ApplicationException(string.Format("Course '{0}' should have a non-null print area", id));
+            if (appearanceScaleFactor <= 0)
+                appearanceScaleFactor = 1;
 
             nextCourseControl = firstCourseControl;
 
@@ -1053,7 +1057,8 @@ namespace PurplePen
                 default:            xmlinput.BadXml("Invalid course kind '{0}'", kindText); break;
             }
 
-            sortOrder = xmlinput.GetAttributeInt("order", 0);    // 0 sort orders fixed up later in EventDB.FixCourseSortOrders()
+            sortOrder = xmlinput.GetAttributeInt("order", 0);    
+            //0 sort orders fixed up later in EventDB.FixCourseSortOrders()
 
             name = "";
             printScale = 15000;
@@ -1062,6 +1067,7 @@ namespace PurplePen
             firstControlOrdinal = 1;
             labelKind = (kind == CourseKind.Score) ? ControlLabelKind.Code : ControlLabelKind.Sequence;
             scoreColumn = (kind == CourseKind.Score) ? 0 : -1;
+            appearanceScaleFactor = 1;
 
             bool first = true;
             while (xmlinput.FindSubElement(first, "name", "secondary-title", "first", "print-area", "options", "labels", "part-options", "relay", "relay-branch")) {
@@ -1097,6 +1103,7 @@ namespace PurplePen
                         printScale = xmlinput.GetAttributeFloat("print-scale");
                         climb = xmlinput.GetAttributeFloat("climb", -1F);
                         load = xmlinput.GetAttributeInt("load", -1);
+                        appearanceScaleFactor = xmlinput.GetAttributeFloat("appearance-scale-factor", (float)1.0);
                         if (kind == CourseKind.Score) 
                             scoreColumn = EventDBUtil.ReadScoreColumnAttribute(xmlinput);
                         descKind = EventDBUtil.ReadDescriptionKindAttribute(xmlinput);
@@ -1231,6 +1238,8 @@ namespace PurplePen
                 xmloutput.WriteAttributeString("load", XmlConvert.ToString(load));
             if (overrideCourseLength.HasValue)
                 xmloutput.WriteAttributeString("course-length", XmlConvert.ToString(overrideCourseLength.Value));
+            if (appearanceScaleFactor >= 0)
+                xmloutput.WriteAttributeString("appearance-scale-factor", XmlConvert.ToString(appearanceScaleFactor));
 
             if (kind == CourseKind.Score) 
                 EventDBUtil.WriteScoreColumnAttribute(xmloutput, scoreColumn);
@@ -3257,10 +3266,29 @@ namespace PurplePen
             return courseStore[courseId];
         }
 
+        public List<Id<CourseControl>> GetCourseControlIds(Course course, bool descent = false)
+        {
+            List<Id<CourseControl>> controlList = new List<Id<CourseControl>>();
+            if (course.kind == CourseKind.Normal || course.firstCourseControl.IsNone) return controlList;
+
+            CourseControl currentControl = courseControlStore[course.firstCourseControl];
+            controlList.Add(course.firstCourseControl);
+
+            while(currentControl.nextCourseControl.IsNotNone)
+            {
+                CourseControl next = courseControlStore[currentControl.nextCourseControl];
+                controlList.Add(currentControl.nextCourseControl);
+                currentControl = next;
+             }
+
+            return controlList;
+        }
+
         public CourseControl GetCourseControl(Id<CourseControl> courseControlId)
         {
             return courseControlStore[courseControlId];
         }
+
 
         public Special GetSpecial(Id<Special> specialId)
         {

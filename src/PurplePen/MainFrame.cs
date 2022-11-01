@@ -1432,7 +1432,7 @@ namespace PurplePen
             // If the dialog completed successfully, then add the course.
             if (result == DialogResult.OK) {
                 controller.NewCourse(addCourseDialog.CourseKind, addCourseDialog.CourseName, addCourseDialog.ControlLabelKind, addCourseDialog.ScoreColumn, addCourseDialog.SecondaryTitle,
-                    addCourseDialog.PrintScale, addCourseDialog.Climb, addCourseDialog.Length, addCourseDialog.DescKind, addCourseDialog.FirstControlOrdinal);
+                    addCourseDialog.PrintScale, addCourseDialog.Climb, addCourseDialog.Length, addCourseDialog.DescKind, addCourseDialog.FirstControlOrdinal, addCourseDialog.appearanceScaleFactor);
             }
         }
 
@@ -1447,7 +1447,8 @@ namespace PurplePen
             int firstControlOrdinal;
             ControlLabelKind labelKind;
             int scoreColumn;
-            controller.GetCurrentCourseProperties(out courseKind, out courseName, out labelKind, out scoreColumn, out secondaryTitle, out printScale, out climb, out length, out descKind, out firstControlOrdinal);
+            float appearanceScaleFactor; 
+            controller.GetCurrentCourseProperties(out courseKind, out courseName, out labelKind, out scoreColumn, out secondaryTitle, out printScale, out climb, out length, out descKind, out firstControlOrdinal, out appearanceScaleFactor);
 
             // Initialize the dialog
             addCourseDialog.InitializePrintScales(controller.MapScale);
@@ -1461,6 +1462,7 @@ namespace PurplePen
             addCourseDialog.FirstControlOrdinal = firstControlOrdinal;
             addCourseDialog.ControlLabelKind = labelKind;
             addCourseDialog.ScoreColumn = scoreColumn;
+            addCourseDialog.appearanceScaleFactor = appearanceScaleFactor;
 
         }
         private void duplicateCourseMenu_Click(object sender, EventArgs e)
@@ -1480,7 +1482,7 @@ namespace PurplePen
                 // If the dialog completed successfully, then add the course.
                 if (result == DialogResult.OK) {
                     controller.DuplicateCurrentCourse(addCourseDialog.CourseName, addCourseDialog.ControlLabelKind, addCourseDialog.ScoreColumn, addCourseDialog.SecondaryTitle,
-                                                      addCourseDialog.PrintScale, addCourseDialog.Climb, addCourseDialog.Length, addCourseDialog.DescKind, addCourseDialog.FirstControlOrdinal);
+                                                      addCourseDialog.PrintScale, addCourseDialog.Climb, addCourseDialog.Length, addCourseDialog.DescKind, addCourseDialog.FirstControlOrdinal, addCourseDialog.appearanceScaleFactor);
                 }
 
             }
@@ -1503,7 +1505,7 @@ namespace PurplePen
                 // If the dialog completed successfully, then change the course.
                 if (result == DialogResult.OK) {
                     controller.ChangeCurrentCourseProperties(addCourseDialog.CourseKind, addCourseDialog.CourseName, addCourseDialog.ControlLabelKind, addCourseDialog.ScoreColumn, addCourseDialog.SecondaryTitle,
-                        addCourseDialog.PrintScale, addCourseDialog.Climb, addCourseDialog.Length, addCourseDialog.DescKind, addCourseDialog.FirstControlOrdinal);
+                        addCourseDialog.PrintScale, addCourseDialog.Climb, addCourseDialog.Length, addCourseDialog.DescKind, addCourseDialog.FirstControlOrdinal, addCourseDialog.appearanceScaleFactor);
                 }
             }
             else {
@@ -3183,6 +3185,67 @@ namespace PurplePen
         {
             controller.ChangeMapStandard("2017");
         }
+
+
+        /*private void cSVExportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //export csv
+            controller.CreateDescriptionCSV()
+        }*/
+
+        private void cSVToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            SaveFileDialog saveCSVDialog = new SaveFileDialog();
+            saveCSVDialog.Filter = MiscText.CSVFilter;
+            saveCSVDialog.FilterIndex = 1;
+            saveCSVDialog.DefaultExt = "csv";
+            saveCSVDialog.OverwritePrompt = true;
+            saveCSVDialog.InitialDirectory = Path.GetDirectoryName(controller.FileName);
+
+            if (saveCSVDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                controller.CreateDescriptionCSV(saveCSVDialog.FileName);
+            }
+
+        }
+
+        private void letterAssignamentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            // Initialize dialog.
+            LetterAssignament letterAssignament = new LetterAssignament(controller.GetEventDB());
+
+            // Show the dialog.
+            DialogResult result = letterAssignament.ShowDialog(this);
+
+            // Apply the changes.
+            if (result == DialogResult.OK)
+            {
+                Id<Course> courseId = letterAssignament.SelectedCourses;
+                controller.LetterAssignament(letterAssignament.FirstLetter, courseId);
+                Debug.Print("letter assignament stop");
+                //controller.AutoNumbering(autoNumberingDialog.FirstCode, autoNumberingDialog.DisallowInvertibleCodes, autoNumberingDialog.RenumberExisting);
+            }
+
+            letterAssignament.Dispose();
+        }
+
+        private void exportCSVToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveCSVDialog = new SaveFileDialog();
+            saveCSVDialog.Filter = MiscText.CSVFilter;
+            saveCSVDialog.FilterIndex = 1;
+            saveCSVDialog.DefaultExt = "csv";
+            saveCSVDialog.OverwritePrompt = true;
+            saveCSVDialog.InitialDirectory = Path.GetDirectoryName(controller.FileName);
+
+            if (saveCSVDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                controller.CreateDescriptionCSV(saveCSVDialog.FileName);
+            }
+        }
+
         private void mapStdSpr2019Menu_Click(object sender, EventArgs e)
         {
             controller.ChangeMapStandard("Spr2019");

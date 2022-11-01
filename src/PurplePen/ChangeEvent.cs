@@ -97,6 +97,19 @@ namespace PurplePen
             eventDB.ReplaceControlPoint(controlId, controlPoint);
         }
 
+        public static void ChangeCodeScore(EventDB eventDB, Id<ControlPoint> controlId, string newCode)
+        {
+            Debug.Assert(newCode != null);
+
+            ControlPoint controlPoint = eventDB.GetControl(controlId);
+            //Debug.Assert(controlPoint.kind == ControlPointKind.Normal);
+
+            controlPoint = (ControlPoint)controlPoint.Clone();
+            controlPoint.code = newCode;
+
+            eventDB.ReplaceControlPoint(controlId, controlPoint);
+        }
+
         // Change a text line associated with a course control
         public static void ChangeTextLine(EventDB eventDB, Id<CourseControl> courseControlId, string textLine, bool above)
         {
@@ -326,6 +339,63 @@ namespace PurplePen
             }
         }
 
+        public static void LetterAssignament(EventDB eventDB, Id<Course> courseId, string firstLetter)
+        {
+            Course course = eventDB.GetCourse(courseId);
+
+            List<Id<CourseControl>> courseControls = eventDB.GetCourseControlIds(course);
+            if (courseControls.Count <= 0) return;
+            List<KeyValuePair<Id<CourseControl>, int>> coursePoints = new List<KeyValuePair<Id<CourseControl>, int>>();
+
+            foreach(Id<CourseControl> courseControl in courseControls)
+            {
+                if (!eventDB.IsCourseControlPresent(courseControl)) continue;
+                coursePoints.Add(new KeyValuePair<Id<CourseControl>, int>(courseControl, eventDB.GetCourseControl(courseControl).points));
+            }
+
+            coursePoints = coursePoints.OrderBy((x) => x.Value).ToList();
+
+            int[] byteCode = new int[2] { (int)firstLetter[0], 65 };
+            string newcode = "";
+            int i = 0;
+
+            foreach (KeyValuePair<Id<CourseControl>, int> coursePointControl in coursePoints)
+            {
+                CourseControl currentControl = eventDB.GetCourseControl(coursePointControl.Key);
+                ControlPoint currentPoint = eventDB.GetControl(currentControl.control);
+
+                if (i+1>=coursePoints.Count)
+                {
+                    currentControl.nextCourseControl = Id<CourseControl>.None;
+                } else
+                {
+                    currentControl.nextCourseControl = coursePoints[i + 1].Key;
+                }
+
+                if (currentPoint.kind == ControlPointKind.Normal)
+                {
+                    newcode = String.Join("", byteCode.Select(x => (char)x));
+                    byteCode[1] += 1;
+                    if (byteCode[1] > 90)
+                    {
+                        byteCode[1] = 65;
+                        byteCode[0] += 1;
+                    }
+                    ChangeEvent.ChangeCodeScore(eventDB, currentControl.control, newcode);
+                }
+
+                eventDB.ReplaceCourseControl(coursePointControl.Key, currentControl);
+                i += 1;
+            }
+
+            course.firstCourseControl = coursePoints.First().Key;
+            eventDB.ReplaceCourse(courseId, course);
+            //eventDB.ReplaceCourseControl(course.firstCourseControl, eventDB.GetCourseControl(coursePoints.First().Key));
+
+            return;
+
+        }
+
         // Change the attributes of a all controls display.
         public static void ChangeAllControlsProperties(EventDB eventDB, float printScale, DescriptionKind descriptionKind)
         {
@@ -450,7 +520,7 @@ namespace PurplePen
         }
 
         // Change the attributes of a course.
-        public static void ChangeCourseProperties(EventDB eventDB, Id<Course> courseId, CourseKind courseKind, string courseName, ControlLabelKind labelKind, int scoreColumn, string secondaryTitle, float printScale, float climb, float? length, DescriptionKind descriptionKind, int firstControlOrdinal)
+        public static void ChangeCourseProperties(EventDB eventDB, Id<Course> courseId, CourseKind courseKind, string courseName, ControlLabelKind labelKind, int scoreColumn, string secondaryTitle, float printScale, float climb, float? length, DescriptionKind descriptionKind, int firstControlOrdinal, float appearanceScaleFactor)
         {
             Course course = eventDB.GetCourse(courseId);
 
@@ -465,6 +535,7 @@ namespace PurplePen
             course.overrideCourseLength = length;
             course.descKind = descriptionKind;
             course.firstControlOrdinal = firstControlOrdinal;
+            course.appearanceScaleFactor = appearanceScaleFactor;
 
             eventDB.ReplaceCourse(courseId, course);
         }
@@ -1309,7 +1380,7 @@ namespace PurplePen
 
         // Create a new course with the given attributes. The course sorts after all existing courses.
         // If addStartAndFinish is true, then if exact one start control exists, it is added. If exactly one finish control exists, it is added.
-        public static Id<Course> CreateCourse(EventDB eventDB, CourseKind courseKind, string name, ControlLabelKind labelKind, int scoreColumn, string secondaryTitle, float printScale, float climb, float? length, DescriptionKind descriptionKind, int firstControlOrdinal, bool addStartAndFinish)
+        public static Id<Course> CreateCourse(EventDB eventDB, CourseKind courseKind, string name, ControlLabelKind labelKind, int scoreColumn, string secondaryTitle, float printScale, float climb, float? length, DescriptionKind descriptionKind, int firstControlOrdinal, bool addStartAndFinish, float appearanceScaleFactor)
         {
             // Find max sort order in use.
             int maxSortOrder = 0;
@@ -1320,6 +1391,7 @@ namespace PurplePen
             PrintArea printArea = (PrintArea) eventDB.GetEvent().printArea.Clone();
 
             Course newCourse = new Course(courseKind, name, printScale, maxSortOrder + 1);
+            newCourse.appearanceScaleFactor = appearanceScaleFactor;
             newCourse.secondaryTitle = secondaryTitle;
             newCourse.climb = climb;
             newCourse.overrideCourseLength = length;

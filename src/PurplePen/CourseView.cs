@@ -377,13 +377,28 @@ namespace PurplePen
         // the map, then this is always 1.0.
         public float CourseObjRatio(CourseAppearance appearance)
         {
+            float appearanceScaleFactor = 1;
+            if (BaseCourseId != null)
+            {
+                try
+                {
+                    Course course = eventDB.GetCourse(BaseCourseId);
+                    appearanceScaleFactor = course.appearanceScaleFactor;
+                    Debug.Print(appearanceScaleFactor.ToString());
+                } catch (Exception e)
+                {
+                    //
+                }
+                
+            }
+            if (appearanceScaleFactor <= 0) appearanceScaleFactor = 1;
             switch (appearance.itemScaling) {
                 case ItemScaling.None:
-                    return ScaleRatio;
+                    return ScaleRatio * appearanceScaleFactor;
                 case ItemScaling.RelativeToMap:
-                    return 1.0F;
+                    return 1.0F * appearanceScaleFactor ;
                 case ItemScaling.RelativeTo15000:
-                    return 15000F / mapScale;
+                    return 15000F / mapScale * appearanceScaleFactor;
                 default:
                     Debug.Fail("Unknown ItemScaling value");
                     return ScaleRatio;
